@@ -1,0 +1,46 @@
+﻿@using FluentUICurdOperation.ViewModel
+<h3>DataGridComponent</h3>
+@if (Visible)
+{
+    <FluentDataGrid Items="@Blogs" TGridItem="BlogViewModel">
+        <TemplateColumn Tooltip="true">
+            <img class="card-image" src="@(context.ImageUrl)" />
+        </TemplateColumn>
+        <PropertyColumn Property="@(c => c.Name)" Sortable="true" Align="Align.Center" Tooltip="true" />
+        <PropertyColumn Property="@(c => c.Description)" Sortable="true" Align="Align.End" Class="multiline-text" />
+        <TemplateColumn Title="Actions" Align="@Align.End">
+            <FluentButton IconEnd="@(new Icons.Regular.Size32.BookOpen())" OnClick="@(() => ViewBlog(context.Id))" />
+            <FluentButton IconEnd="@(new Icons.Regular.Size48.Edit())" OnClick="@(() => EditBlog(context.Id))" />
+            <FluentButton IconEnd="@(new Icons.Regular.Size48.Delete())" OnClick="@(() => DeleteConfirmation(context.Id))" />
+        </TemplateColumn>
+    </FluentDataGrid>
+}
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public IQueryable<BlogViewModel> Blogs { get; set; }
+
+    [Parameter]
+    public EventCallback<int> DeleteConfirmationClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<int> EditBlogClicked { get; set; }
+    [Parameter]
+    public EventCallback<int> ViewBlogClicked { get; set; }
+
+    private async void DeleteConfirmation(int blogId)
+    {
+        await DeleteConfirmationClicked.InvokeAsync(blogId);
+    }
+
+    private async void EditBlog(int blogId)
+    {
+        await EditBlogClicked.InvokeAsync(blogId);
+    }
+    private async void ViewBlog(int blogId)
+    {
+        await ViewBlogClicked.InvokeAsync(blogId);
+    }
+}

@@ -1,0 +1,55 @@
+﻿@page "/"
+@using FluentUICurdOperation.Data.Blog
+@using FluentUICurdOperation.ViewModel
+
+@inject IBlogService blogService
+
+@inject IDialogService DialogService
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<DataGridComponent Blogs="@blogs" Visible="@showList"
+                   EditBlogClicked="EditBlog"
+                   DeleteConfirmationClicked="DeleteBlog"
+                   ViewBlogClicked="ViewBlog" />
+
+
+@code{
+    private bool showList = false;
+    private IQueryable<BlogViewModel> blogs;
+
+    protected override void OnInitialized()
+    {
+        showList = true;
+        LoadBlogs();
+    }
+    private async void LoadBlogs()
+    {
+        var bloglist = await blogService.GetAllAsync();
+        blogs = bloglist.Select(x => new BlogViewModel() 
+        { Id = x.Id, Name = x.Name, Description = x.Description,
+            ImageUrl = x.Url }).
+        AsQueryable();
+    }
+
+    private async void EditBlog(int id)
+    {
+        await DialogService.
+        ShowInfoAsync(message: $"Edit click with blog id{id}",
+                                         title: "Edit");
+    }
+    private async void DeleteBlog(int id)
+    {
+        await DialogService.
+        ShowInfoAsync(message: $"delete click with blog id{id}",
+                                          title: "Delete");
+    }
+    private async void ViewBlog(int id)
+    {
+        await DialogService.
+        ShowInfoAsync(message: $"View click with blog id{id}",
+                                          title: "View");
+    }
+    }
