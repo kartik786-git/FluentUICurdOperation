@@ -51,6 +51,7 @@ namespace FluentUICurdOperation.Data.Blog
             {
                 existingProduct.Name = blog.Name;
                 existingProduct.Description = blog.Description;
+                existingProduct.Url = blog.Url;
             }
             return existingProduct.Id;
         }

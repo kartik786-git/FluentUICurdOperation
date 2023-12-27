@@ -1,0 +1,67 @@
+﻿@using FluentUICurdOperation.ViewModel
+
+@if (Visible)
+{
+    <FluentLabel Typo="Typography.PageTitle">@(addEditBlog.Id > 0 ? "Update" : "Create") blog</FluentLabel>
+
+    <FluentCard Style="margin: 16px 0px; 
+padding: 16px; 
+width: 350px; height: auto;">
+        <EditForm Model="@addEditBlog" OnValidSubmit="CreateNewBlog">
+
+            <FluentTextField Label="Blog name: *"
+            Placeholder="Enter your blog name"
+            Required
+            @bind-Value="@addEditBlog.Name" />
+
+            <FluentTextArea Style="width:300px" Label="Description:"
+            Placeholder="Enter your description"
+            Required
+            @bind-Value="@addEditBlog.Description" />
+            <FluentTextField Label="Image Url: *"
+            Placeholder="Enter your image url"
+            Required
+            @bind-Value="@addEditBlog.ImageUrl" />
+            <div style="margin: 24px 0px;" />
+
+            <FluentButton Appearance="Appearance.Accent"
+            Loading="@Loading"
+            Disabled="@(string.IsNullOrWhiteSpace(addEditBlog.Name)
+                            || string.IsNullOrWhiteSpace(addEditBlog.Description) ||
+                            string.IsNullOrWhiteSpace(addEditBlog.ImageUrl))"
+            Type="ButtonType.Submit">
+                @(addEditBlog.Id > 0 ? "Update" : "Create")
+            </FluentButton>
+
+            <FluentButton OnClick="CancelBlog" Appearance="Appearance.Accent">
+                Back
+            </FluentButton>
+        </EditForm>
+    </FluentCard>
+}
+
+@code {
+    private bool Loading = false;
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public BlogViewModel addEditBlog { get; set; } = new BlogViewModel();
+
+    [Parameter]
+    public EventCallback<BlogViewModel> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback CancelBlogClicked { get; set; }
+
+    private async Task CreateNewBlog()
+    {
+        await OnSave.InvokeAsync(addEditBlog);
+    }
+
+    private async Task CancelBlog()
+    {
+        await CancelBlogClicked.InvokeAsync();
+    }
+}

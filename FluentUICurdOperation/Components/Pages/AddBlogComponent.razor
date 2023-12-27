@@ -1,0 +1,23 @@
+﻿<h3>AddBlogComponent</h3>
+
+@if (Visible)
+{
+    <FluentStack>
+        <FluentButton Appearance="Appearance.Accent"
+                  OnClick="CreateBlog"
+                  IconStart="@(new Icons.Regular.Size32.Add())">
+        Add New Blog
+    </FluentButton>
+     </FluentStack>
+}
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback CreateBlogClicked { get; set; }
+    private async void CreateBlog()
+    {
+        await CreateBlogClicked.InvokeAsync();
+    }
+}
