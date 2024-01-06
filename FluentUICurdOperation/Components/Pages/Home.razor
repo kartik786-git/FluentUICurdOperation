@@ -24,6 +24,7 @@
     private IQueryable<BlogViewModel> blogs;
     private bool showModal = false;
     private BlogViewModel editBlog = new BlogViewModel();
+    private int deleteId;
 
     protected override void OnInitialized()
     {
@@ -62,9 +63,24 @@
     }
     private async void DeleteBlog(int id)
     {
+        deleteId = id;
         await DialogService.
-        ShowInfoAsync(message: $"delete click with blog id{id}",
-                                          title: "Delete");
+        ShowConfirmationAsync(this,
+            HandleConfirmationResult,
+        "Are you sure you want to procced?", "Yes", "No", "Confirmation");
+
+    }
+
+    async Task HandleConfirmationResult(DialogResult result)
+    {
+        if(!result.Cancelled)
+        {
+            await blogService.DeleteAsync(deleteId);
+            ResetVisibleComponent();
+            LoadBlogs();
+            showList = true;
+
+        }
     }
     private async void ViewBlog(int id)
     {
