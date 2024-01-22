@@ -1,0 +1,46 @@
+﻿@using FluentUICurdOperation.ViewModel
+
+@if (IsVisibleView)
+{
+    <FluentLayout Style="margin-top: 10px;">
+
+       <FluentHeader>
+        <FluentSpacer />
+        Blob Details
+        <FluentSpacer />
+        <FluentButton OnClick="BackToBlogList" BackgroundColor="Red" Appearance="Appearance.Accent"
+                      IconStart="@(new Icons.Regular.Size48.ArrowLeft())">
+            Back
+        </FluentButton>
+           </FluentHeader>
+
+           <FluentCard>
+                <FluentBodyContent Style="text-align: center;">
+            <div class="image-container">
+                <img src="@viewBlog.ImageUrl" alt="Card Image" class="card-image" />
+            </div>
+
+            <h1>@viewBlog.Name</h1>
+            <h5>Author :- @viewBlog.Author | Date : @DateTime.Now</h5>
+            <p>@viewBlog.Description</p>
+                    </FluentBodyContent>
+               </FluentCard>
+
+     </FluentLayout>
+     }
+@code {
+
+    [Parameter]
+    public bool IsVisibleView { get; set; }
+
+    [Parameter]
+    public BlogViewModel viewBlog { get; set; }
+
+    [Parameter]
+    public EventCallback BackToBlogClicked { get; set; }
+
+    private void BackToBlogList()
+    {
+        BackToBlogClicked.InvokeAsync();
+    }
+}

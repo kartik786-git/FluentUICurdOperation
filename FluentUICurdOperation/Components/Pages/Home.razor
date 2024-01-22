@@ -18,6 +18,9 @@
 <AddEditComponent Visible="@showModal" addEditBlog="@editBlog"
                   OnSave="SaveBlog" CancelBlogClicked="backToList" />
 
+<BlogDetailsComponent IsVisibleView="@showView" BackToBlogClicked="backToList" 
+    viewBlog="@editBlog" />
+
 
 @code{
     private bool showList = false;
@@ -25,6 +28,7 @@
     private bool showModal = false;
     private BlogViewModel editBlog = new BlogViewModel();
     private int deleteId;
+    private bool showView = false;
 
     protected override void OnInitialized()
     {
@@ -84,9 +88,18 @@
     }
     private async void ViewBlog(int id)
     {
-        await DialogService.
-        ShowInfoAsync(message: $"View click with blog id{id}",
-                                          title: "View");
+         var blog = await blogService.GetByIdAsync(id);
+         var blogViewModel = new BlogViewModel()
+            {
+                Id = blog.Id,
+                Name = blog.Name,
+                Description = blog.Description,
+                ImageUrl = blog.Url,
+                Author= blog.Author
+            };
+        editBlog = blogViewModel;
+        ResetVisibleComponent();
+        showView = true;
     }
 
     private async void SaveBlog(BlogViewModel blog)
@@ -125,6 +138,7 @@
     {
         showModal = false;
         showList = false;
+        showView = false;
         blogs = null!;
     }
     }
